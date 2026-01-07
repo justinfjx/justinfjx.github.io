@@ -1,0 +1,504 @@
+<!DOCTYPE html><html lang="[&quot;zh-CN&quot;,&quot;en&quot;,&quot;default&quot;]" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><title>Docker部署Overleaf | Justin</title><meta name="keywords" content="overleaf,docker"><meta name="author" content="Justin"><meta name="copyright" content="Justin"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="Docker部署Overleaf"><meta name="application-name" content="Docker部署Overleaf"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f7f9fe"><meta property="og:type" content="article"><meta property="og:title" content="Docker部署Overleaf"><meta property="og:url" content="https://blog.jiaxin.fan/articles/20250526131427.html"><meta property="og:site_name" content="Justin"><meta property="og:description" content="参考资料：Docker部署Overleaf包含中文字体与全套texlive镜像搭建和使用overleaf服务器自建overleaf (在线latex环境)全过程指南Overleaf in Docker阿里云ECS官方文档：如何配置Linux实例的swap分区？  安装Docker和Docker C"><meta property="og:locale" content="[&quot;zh-CN&quot;,&quot;en&quot;,&quot;default&quot;]"><meta property="og:image" content="https://blog.jiaxin.fan/img/default_cover.jpg"><meta property="article:author" content="Justin"><meta property="article:tag"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://blog.jiaxin.fan/img/default_cover.jpg"><meta name="description" content="参考资料：Docker部署Overleaf包含中文字体与全套texlive镜像搭建和使用overleaf服务器自建overleaf (在线latex环境)全过程指南Overleaf in Docker阿里云ECS官方文档：如何配置Linux实例的swap分区？  安装Docker和Docker C"><link rel="shortcut icon" href="/favicon.ico"><link rel="canonical" href="https://blog.jiaxin.fan/articles/20250526131427.html"><link rel="preconnect" href="//cdn.cbd.int"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.cbd.int/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/swiper/swiper.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  linkPageTop: undefined,
+  peoplecanvas: undefined,
+  postHeadAiDescription: {"enable":true,"gptName":"AnZhiYu","mode":"local","switchBtn":false,"btnLink":"https://afdian.net/item/886a79d4db6711eda42a52540025c377","randomNum":3,"basicWordCount":1000,"key":"xxxx","Referer":"https://xx.xx/"},
+  diytitle: {"enable":true,"leaveTitle":"w(ﾟДﾟ)w 不要走！再看看嘛！","backTitle":"♪(^∇^*)欢迎肥来！"},
+  LA51: {"enable":true,"ck":"3M2ZO31o4YGc4oFd","LingQueMonitorID":"3M2ZO31o4YGc4oFd"},
+  greetingBox: {"enable":true,"default":"哈喽！！！👋","list":[{"greeting":"晚安😴","startTime":0,"endTime":5},{"greeting":"早上好鸭👋, 祝你一天好心情！","startTime":6,"endTime":9},{"greeting":"上午好👋, 状态很好，鼓励一下～","startTime":10,"endTime":10},{"greeting":"11点多啦, 在坚持一下就吃饭啦～","startTime":11,"endTime":11},{"greeting":"午安👋, 加油！","startTime":12,"endTime":14},{"greeting":"🌈充实的一天辛苦啦！","startTime":14,"endTime":18},{"greeting":"19点喽, 奖励一顿丰盛的大餐吧🍔。","startTime":19,"endTime":19},{"greeting":"晚上好👋, 在属于自己的时间好好放松😌~","startTime":20,"endTime":24}]},
+  twikooEnvId: 'https://justinfjx.netlify.app/.netlify/functions/twikoo',
+  commentBarrageConfig:undefined,
+  music_page_default: "nav_music",
+  root: '/',
+  preloader: undefined,
+  friends_vue_info: {"apiurl":null},
+  navMusic: false,
+  mainTone: {"mode":"api","api":"https://img2color-go.vercel.app/api?img=","cover_change":true},
+  authorStatus: {"skills":["🤖️ 数码科技爱好者","🔍 分享与热心帮助","🏠 智能家居小能手","🔨 设计开发一条龙","🤝 专修交互与设计","🏃 脚踏实地行动派","🧱 团队小组发动机","💢 壮汉人狠话不多"]},
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简","rightMenuMsgToTraditionalChinese":"转为繁体","rightMenuMsgToSimplifiedChinese":"转为简体"},
+  noticeOutdate: {"limitDay":365,"position":"top","messagePrev":"距离本文上次更新已有","messageNext":"天啦！图文如有失效可以邮件提醒我更新哦~"},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    simplehomepage: true,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"copy":true,"copyrightEbable":false,"limitCount":50,"languages":{"author":"作者: Justin","link":"链接: ","source":"来源: Justin","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。","copySuccess":"复制成功，复制和转载请标注本文地址"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#425AEF","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.min.js',
+      css: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  shortcutKey: undefined,
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  configTitle: 'Justin',
+  title: 'Docker部署Overleaf',
+  postAI: '',
+  pageFillDescription: '安装Docker和Docker Compose, 使用宝塔面板安装, 使用命令行安装, 配置并安装Overleaf Toolkit, 拉取Overleaf Toolkit, 配置Overleaf Toolkit, 修改启动镜像, （可选）关闭docker自启配置服务器的swap分区, 关闭docker服务自启动, 配置服务器的swap分区, 启动docker容器, 配置nginx反代, 使用overleaf, 迁移与备份参考资料部署包含中文字体与全套镜像搭建和使用服务器自建在线环境全过程指南阿里云官方文档如何配置实例的分区安装和依赖和因此需要先安装和使用宝塔面板安装使用宝塔面板安装和非常简单只需要在宝塔面板的左侧菜单直接安装即可宝塔会同时安装好和使用命令行安装安装详见官方文档组件的安装详见官方文档配置并安装的安装需要创建三个容器包括和可以几乎一键完成这三个容器的部署拉取将从克隆到本地主机上以下命令已重命名为文件夹进入目录后续的所有指令都在目录下执行配置创建本地配置文件是该工具包提供的一组脚本这些脚本封装起来并为你处理大部分的细节查看配置目录下的内容目录下有三个文件名字和作用分别为顶级配置文件加载到容器中的环境变量使用的镜像版本参数配置这一步修改的参数在运行起来之后即后面运行的再修改是不会生效的打开文件修改参数可以通过宝塔面板打开文件来修改会更加方便一些更习惯用也是可以的打开文件修改以下参数监听的本地地址如果这里的设置为服务器的公网那么就可以通过公网端口来访问监听的本地端口默认是可修改为任意可用的其他端口修改后的完整文件如下这里没有使用来创建容器进行反代而是使用了宝塔面板的进行反代后面会提到打开文件修改以下参数网站的无论是否配置此项都能通过之前配置的本地地址端口来访问管理员账号登录邮箱修改后的完整文件如下修改启动镜像官方提供的镜像是不完全程序且不支持中文字体参考基于官方开源的镜像搭建了自己的镜像如果对比较熟悉的同学可以跳过该步骤自行拉取官方镜像然后再进行配置当然官方镜像不包含中文字体支持可参考文章配置在这里直接使用作为的镜像但该镜像直接使用时出现很多变量还是原作者的自定义内容包括但不限于左下角标注联系邮箱用户修改密码的域名等笔者目前没有寻找使用的情况下修改这里面的变量的方法有待后续更新进入文件夹下的目录打开文件将修改为改这一行就好修改后的完整文件内容如下咋哩也可以修改目录下配置文件赋值为可选关闭自启配置服务器的分区的镜像对内存要求并不高但是笔者在初次尝试使用了内存的服务器启动服务后服务器磁盘读取拉满直接导致进不去命令行关闭服务自启动在启动镜像前建议先关闭服务的自启动另外将上一小节中的文件中的修改为这样容器不会在出现问题关闭后又自动重启关闭服务自启动后需要手动启动服务这样万一出问题导致服务器宕机无法进入命令行也可以通过强制重启服务器来关闭在确认容器运行正常后可以通过以下命令重新开启服务的自启动配置服务器的分区参考阿里云官方文档如何配置实例的分区启动容器在目录下执行以下命令注意第一次启动时会下载镜像可能会比较慢该命令类似于命令但是会自动拉取镜像并启动容器首次运行会看到下载镜像的过程下载完成后会自动运行容器然后会输出日志在输出日志时可用用来停止日志输出此时会停止容器停止后可通过来重新启动容器并不输出日志配置反代在命令行中运行可以看到有个容器在运行在列中可以看到容器的端口映射在容器的端口映射为这意味着容器的端口被映射到主机本地的端口也就是的网页被映射到了上接下来配置宝塔面板的反代在宝塔面板的左侧菜单网站方向代理点击添加反代在域名中填写要在外网使用的域名例如设置为在目标中选择地址填写暂不清楚这里为什么不是在发送域名中填写是默认填写好的完成以上步骤后即将反向代理到了上至于域名使用只要在宝塔面板中为域名配置证书即可使用创建管理员账户在浏览器中访问或者在局域网内访问服务端口即可看到管理员的注册界面输入密码注册即可笔者使用该镜像没有再研究注册更多用户时给出的修改密码的链接仍然是原作者的域名的问题应该需要更改的镜像的变量有待后续更新迁移与备份本节完全转自参考没有经过测试如果是采用工具包进行部署服务的话在该目录下的文件夹会映射容器的文件包括文件夹备份这几个文件夹即可在迁移的时候启动容器前先把文件复制到目录下即可恢复数据',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-01-07 09:57:47',
+  postMainColor: '',
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.3.0"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><div id="nav-group"><span id="blog_name"><div class="back-home-button"><i class="anzhiyufont anzhiyu-icon-grip-vertical"></i><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" href="https://blog.jiaxin.fan/" title="我的博客"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/justinfjx/images/main/hexo/202504281806460.jpeg" alt="我的博客"/><span class="back-menu-item-text">我的博客</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">项目</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://image.anheyu.com/" title="安知鱼图床"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://image.anheyu.com/favicon.ico" alt="安知鱼图床"/><span class="back-menu-item-text">安知鱼图床</span></a></div></div></div></div><a id="site-name" href="/" accesskey="h"><div class="title">Justin</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a></span><div class="mask-name-container"><div id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 时光</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/link/"><span> 导航</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/comments/"><span> 留言板</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/air-conditioner/"><span> 小空调</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:toRandomPost()"><span> 随便逛逛</span></a></div></div></div><div id="nav-right"><div class="nav-button only-home" id="travellings_button" title="随机前往一个开往项目网站"><a class="site-page" onclick="anzhiyu.totraveling()" title="随机前往一个开往项目网站" href="javascript:void(0);" rel="external nofollow" data-pjax-state="external"><i class="anzhiyufont anzhiyu-icon-train"></i></a></div><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><div class="nav-button" id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" title="搜索🔍" accesskey="s"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span> 搜索</span></a></div><input id="center-console" type="checkbox"/><label class="widget" for="center-console" title="中控台" onclick="anzhiyu.switchConsole();"><i class="left"></i><i class="widget center"></i><i class="widget right"></i></label><div id="console"><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" target="_blank"><img class="post-qr-code-img" alt="微信" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" target="_blank"><img class="post-qr-code-img" alt="支付宝" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> 最新评论</span></div><div class="aside-list"><span>正在加载中...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/Hexo/" style="font-size: 1.05rem;">Hexo<sup>1</sup></a><a href="/tags/anaconda/" style="font-size: 1.05rem;">anaconda<sup>1</sup></a><a href="/tags/axios/" style="font-size: 1.05rem;">axios<sup>1</sup></a><a href="/tags/csdn/" style="font-size: 1.05rem;">csdn<sup>1</sup></a><a href="/tags/cuda/" style="font-size: 1.05rem;">cuda<sup>1</sup></a><a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 1.05rem;">c语言<sup>3</sup></a><a href="/tags/docker/" style="font-size: 1.05rem;">docker<sup>1</sup></a><a href="/tags/ide/" style="font-size: 1.05rem;">ide<sup>1</sup></a><a href="/tags/latex/" style="font-size: 1.05rem;">latex<sup>1</sup></a><a href="/tags/linux/" style="font-size: 1.05rem;">linux<sup>4</sup></a><a href="/tags/markdown/" style="font-size: 1.05rem;">markdown<sup>1</sup></a><a href="/tags/matlab/" style="font-size: 1.05rem;">matlab<sup>2</sup></a><a href="/tags/numpy/" style="font-size: 1.05rem;">numpy<sup>1</sup></a><a href="/tags/nvidia/" style="font-size: 1.05rem;">nvidia<sup>3</sup></a><a href="/tags/opencv/" style="font-size: 1.05rem;">opencv<sup>3</sup></a><a href="/tags/openmv/" style="font-size: 1.05rem;">openmv<sup>1</sup></a><a href="/tags/openvino/" style="font-size: 1.05rem;">openvino<sup>1</sup></a><a href="/tags/overleaf/" style="font-size: 1.05rem;">overleaf<sup>1</sup></a><a href="/tags/pip/" style="font-size: 1.05rem;">pip<sup>1</sup></a><a href="/tags/pycharm/" style="font-size: 1.05rem;">pycharm<sup>1</sup></a><a href="/tags/python/" style="font-size: 1.05rem;">python<sup>14</sup></a><a href="/tags/pytorch/" style="font-size: 1.05rem;">pytorch<sup>4</sup></a><a href="/tags/stm32/" style="font-size: 1.05rem;">stm32<sup>3</sup></a><a href="/tags/ubuntu/" style="font-size: 1.05rem;">ubuntu<sup>4</sup></a><a href="/tags/vue-axios/" style="font-size: 1.05rem;">vue-axios<sup>1</sup></a><a href="/tags/vue-js/" style="font-size: 1.05rem;">vue.js<sup>2</sup></a><a href="/tags/vue3/" style="font-size: 1.05rem;">vue3<sup>1</sup></a><a href="/tags/windows/" style="font-size: 1.05rem;">windows<sup>4</sup></a><a href="/tags/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/" style="font-size: 1.05rem;">串口通信<sup>1</sup></a><a href="/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/" style="font-size: 1.05rem;">人工智能<sup>22</sup></a><a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 1.05rem;">其他<sup>6</sup></a><a href="/tags/%E5%8D%95%E7%89%87%E6%9C%BA/" style="font-size: 1.05rem;">单片机<sup>2</sup></a><a href="/tags/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" style="font-size: 1.05rem;">卷积神经网络<sup>1</sup></a><a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%A1%AC%E4%BB%B6/" style="font-size: 1.05rem;">嵌入式硬件<sup>2</sup></a><a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 1.05rem;">机器学习<sup>17</sup></a><a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" style="font-size: 1.05rem;">深度学习<sup>9</sup></a><a href="/tags/%E7%9F%A9%E9%98%B5/" style="font-size: 1.05rem;">矩阵<sup>1</sup></a><a href="/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" style="font-size: 1.05rem;">神经网络<sup>4</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" style="font-size: 1.05rem;">计算机视觉<sup>7</sup></a><a href="/tags/%E9%95%9C%E5%83%8F/" style="font-size: 1.05rem;">镜像<sup>1</sup></a></div></div><hr/></div></div><div class="console-card history"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>归档</span><a class="card-more-btn" href="/archives/" title="查看更多">
+    <i class="anzhiyufont anzhiyu-icon-angle-right"></i></a></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/05/"><span class="card-archive-list-date">五月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">2</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/04/"><span class="card-archive-list-date">四月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/02/"><span class="card-archive-list-date">二月 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">7</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/10/"><span class="card-archive-list-date">十月 2023</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">3</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/08/"><span class="card-archive-list-date">八月 2022</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/07/"><span class="card-archive-list-date">七月 2022</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">3</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/06/"><span class="card-archive-list-date">六月 2022</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">2</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/05/"><span class="card-archive-list-date">五月 2022</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" title="切换"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></div></nav><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original">原创</a><span class="post-meta-categories"><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BD%91%E7%AB%99/" itemprop="url">网站</a></span><span class="article-meta tags"><a class="article-meta__tags" href="/tags/overleaf/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>overleaf</span></a><a class="article-meta__tags" href="/tags/docker/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>docker</span></a></span></div></div><h1 class="post-title" itemprop="name headline">Docker部署Overleaf</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" itemprop="dateCreated datePublished" datetime="2025-05-26T13:14:27.000Z" title="发表于 2025-05-26 21:14:27">2025-05-26</time><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" itemprop="dateCreated datePublished" datetime="2026-01-07T01:57:47.957Z" title="更新于 2026-01-07 09:57:47">2026-01-07</time></span></div><div class="meta-secondline"><span class="post-meta-separator"></span><span class="post-meta-wordcount"><i class="anzhiyufont anzhiyu-icon-file-word post-meta-icon" title="文章字数"></i><span class="post-meta-label" title="文章字数">字数总计:</span><span class="word-count" title="文章字数">2.6k</span><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-clock post-meta-icon" title="阅读时长"></i><span class="post-meta-label" title="阅读时长">阅读时长:</span><span>10分钟</span></span><span class="post-meta-separator"></span><span class="post-meta-pv-cv" id="" data-flag-title="Docker部署Overleaf"><i class="anzhiyufont anzhiyu-icon-fw-eye post-meta-icon"></i><span class="post-meta-label" title="阅读量">阅读量:</span><span id="busuanzi_value_page_pv"><i class="anzhiyufont anzhiyu-icon-spinner anzhiyu-spin"></i></span></span><span class="post-meta-separator">       </span><span class="post-meta-position" title="作者IP属地为中国"><i class="anzhiyufont anzhiyu-icon-location-dot"></i>中国</span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section><div id="post-top-cover"><img class="nolazyload" id="post-top-bg" src="/img/default_cover.jpg"></div></header><main id="blog-container"><div class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container" itemscope itemtype="https://blog.jiaxin.fan/articles/20250526131427.html"><header><a class="post-meta-categories" href="/categories/%E7%BD%91%E7%AB%99/" itemprop="url">网站</a><a href="/tags/overleaf/" tabindex="-1" itemprop="url">overleaf</a><a href="/tags/docker/" tabindex="-1" itemprop="url">docker</a><h1 id="CrawlerTitle" itemprop="name headline">Docker部署Overleaf</h1><span itemprop="author" itemscope itemtype="http://schema.org/Person">Justin</span><time itemprop="dateCreated datePublished" datetime="2025-05-26T13:14:27.000Z" title="发表于 2025-05-26 21:14:27">2025-05-26</time><time itemprop="dateCreated datePublished" datetime="2026-01-07T01:57:47.957Z" title="更新于 2026-01-07 09:57:47">2026-01-07</time></header><blockquote>
+<p>参考资料：<br><a target="_blank" rel="noopener" href="https://wrm244.gxist.cn/blog/project/web/overleaf-build-docker/">Docker部署Overleaf包含中文字体与全套texlive镜像</a><br><a target="_blank" rel="noopener" href="https://www.tnnidm.com/build-and-use-overleaf-server/">搭建和使用overleaf服务器</a><br><a target="_blank" rel="noopener" href="https://www.bilibili.com/opus/638167200353484805">自建overleaf (在线latex环境)全过程指南</a><br><a target="_blank" rel="noopener" href="https://flxdu.cn/Notes/07-Docker/Overleaf%20in%20Docker.html">Overleaf in Docker</a><br><a target="_blank" rel="noopener" href="https://help.aliyun.com/zh/ecs/support/how-do-i-configure-the-swap-partition-of-a-linux-instance">阿里云ECS官方文档：如何配置Linux实例的swap分区？</a></p>
+</blockquote>
+<h1 id="安装Docker和Docker-Compose"><a href="#安装Docker和Docker-Compose" class="headerlink" title="安装Docker和Docker Compose"></a>安装Docker和Docker Compose</h1><p>Overleaf依赖<code>docker</code>和<code>docker compose</code>，因此需要先安装docker和docker compose。</p>
+<h2 id="使用宝塔面板安装"><a href="#使用宝塔面板安装" class="headerlink" title="使用宝塔面板安装"></a>使用宝塔面板安装</h2><p>使用宝塔面板安装Docker和Docker Compose非常简单，只需要在宝塔面板的<code>左侧菜单-&gt;Docker</code>，直接安装即可。宝塔会同时安装好Docker和Docker Compose。</p>
+<h2 id="使用命令行安装"><a href="#使用命令行安装" class="headerlink" title="使用命令行安装"></a>使用命令行安装</h2><p>Docker安装详见<a target="_blank" rel="noopener" href="https://docs.docker.com/get-docker/">官方文档</a>。</p>
+<p>Docker-Compose组件的安装详见<a target="_blank" rel="noopener" href="https://docs.docker.com/compose/install/">官方文档</a>。</p>
+<h1 id="配置并安装Overleaf-Toolkit"><a href="#配置并安装Overleaf-Toolkit" class="headerlink" title="配置并安装Overleaf Toolkit"></a>配置并安装Overleaf Toolkit</h1><p>overleaf的安装需要创建三个容器，包括sharelatex、mongo和redis。Overleaf Toolkit可以几乎一键完成这三个容器的部署。</p>
+<h2 id="拉取Overleaf-Toolkit"><a href="#拉取Overleaf-Toolkit" class="headerlink" title="拉取Overleaf Toolkit"></a>拉取Overleaf Toolkit</h2><ol>
+<li>将Overleaf Toolkit从github克隆到本地主机上（以下命令已重命名为overleaf文件夹）</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/overleaf/toolkit.git ./overleaf</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>进入overleaf目录</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> overleaf</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>后续的所有指令都在overleaf目录下执行。</p>
+</blockquote>
+<h2 id="配置Overleaf-Toolkit"><a href="#配置Overleaf-Toolkit" class="headerlink" title="配置Overleaf Toolkit"></a>配置Overleaf Toolkit</h2><ol>
+<li>创建本地配置文件</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bin/init</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>bin是该工具包提供的一组脚本，这些脚本封装起来，并为你处理大部分的细节。</p>
+</blockquote>
+<ol start="2">
+<li>查看配置目录下的内容config&#x2F;</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">ls</span> config</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>config目录下有三个文件，名字和作用分别为：</p>
+<ul>
+<li>overleaf.rc：顶级配置文件</li>
+<li>variables.env：加载到 docker 容器中的环境变量</li>
+<li>version：使用的 docker 镜像版本</li>
+</ul>
+</blockquote>
+<ol start="3">
+<li>参数配置<blockquote>
+<p>这一步修改的参数，在docker运行起来之后（即后面运行的<code>bin/up</code>），再修改是不会生效的！</p>
+</blockquote>
+</li>
+</ol>
+<blockquote>
+<p>打开文件修改参数可以通过宝塔面板打开文件来修改，会更加方便一些，更习惯用vim也是可以的。</p>
+</blockquote>
+<p>打开<code>overleaf.rc</code>文件，修改以下参数：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">OVERLEAF_LISTEN_IP=127.0.0.1    <span class="comment"># 监听的本地IP地址。如果这里的ip设置为服务器的公网ip，那么就可以通过公网ip+端口来访问overleaf。</span></span><br><span class="line">OVERLEAF_PORT=9000              <span class="comment"># 监听的本地端口，默认是80，可修改为任意可用的其他端口</span></span><br></pre></td></tr></table></figure>
+<p>修改后的完整文件如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#### Overleaf RC ####</span></span><br><span class="line"></span><br><span class="line">PROJECT_NAME=overleaf</span><br><span class="line"></span><br><span class="line"><span class="comment"># Sharelatex container</span></span><br><span class="line"><span class="comment"># Uncomment the OVERLEAF_IMAGE_NAME variable to use a user-defined image.</span></span><br><span class="line"><span class="comment"># OVERLEAF_IMAGE_NAME=sharelatex/sharelatex</span></span><br><span class="line">OVERLEAF_DATA_PATH=data/overleaf</span><br><span class="line">SERVER_PRO=<span class="literal">false</span></span><br><span class="line">OVERLEAF_LISTEN_IP=127.0.0.1</span><br><span class="line">OVERLEAF_PORT=9000</span><br><span class="line"></span><br><span class="line"><span class="comment"># Sibling Containers</span></span><br><span class="line">SIBLING_CONTAINERS_ENABLED=<span class="literal">true</span></span><br><span class="line">DOCKER_SOCKET_PATH=/var/run/docker.sock</span><br><span class="line"></span><br><span class="line"><span class="comment"># Mongo configuration</span></span><br><span class="line">MONGO_ENABLED=<span class="literal">true</span></span><br><span class="line">MONGO_DATA_PATH=data/mongo</span><br><span class="line">MONGO_IMAGE=mongo</span><br><span class="line">MONGO_VERSION=6.0</span><br><span class="line"></span><br><span class="line"><span class="comment"># Redis configuration</span></span><br><span class="line">REDIS_ENABLED=<span class="literal">true</span></span><br><span class="line">REDIS_DATA_PATH=data/redis</span><br><span class="line">REDIS_IMAGE=redis:6.2</span><br><span class="line">REDIS_AOF_PERSISTENCE=<span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Git-bridge configuration (Server Pro only)</span></span><br><span class="line">GIT_BRIDGE_ENABLED=<span class="literal">false</span></span><br><span class="line">GIT_BRIDGE_DATA_PATH=data/git-bridge</span><br><span class="line"></span><br><span class="line"><span class="comment"># TLS proxy configuration (optional)</span></span><br><span class="line"><span class="comment"># See documentation in doc/tls-proxy.md</span></span><br><span class="line">NGINX_ENABLED=<span class="literal">false</span></span><br><span class="line">NGINX_CONFIG_PATH=config/nginx/nginx.conf</span><br><span class="line">NGINX_HTTP_PORT=80</span><br><span class="line"><span class="comment"># Replace these IP addresses with the external IP address of your host</span></span><br><span class="line">NGINX_HTTP_LISTEN_IP=127.0.1.1</span><br><span class="line">NGINX_TLS_LISTEN_IP=127.0.1.1</span><br><span class="line">TLS_PRIVATE_KEY_PATH=config/nginx/certs/overleaf_key.pem</span><br><span class="line">TLS_CERTIFICATE_PATH=config/nginx/certs/overleaf_certificate.pem</span><br><span class="line">TLS_PORT=443</span><br><span class="line"></span><br><span class="line"><span class="comment"># In Air-gapped setups, skip pulling images</span></span><br><span class="line"><span class="comment"># PULL_BEFORE_UPGRADE=false</span></span><br><span class="line"><span class="comment"># SIBLING_CONTAINERS_PULL=false</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这里没有使用toolkit来创建nginx容器进行反代，而是使用了宝塔面板的nginx进行反代，后面会提到。</p>
+</blockquote>
+<hr>
+<p>打开<code>variables.env</code>文件，修改以下参数：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">OVERLEAF_APP_NAME=<span class="string">&quot;Overleaf&quot;</span></span><br><span class="line"></span><br><span class="line">OVERLEAF_SITE_URL=http://tex.example.com    <span class="comment"># 网站的url，无论是否配置此项，都能通过之前配置的本地ip地址+端口来访问overleaf</span></span><br><span class="line">OVERLEAF_NAV_TITLE=Overleaf</span><br><span class="line">OVERLEAF_ADMIN_EMAIL=example@163.com    <span class="comment"># 管理员账号登录邮箱</span></span><br></pre></td></tr></table></figure>
+<p>修改后的完整文件如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">OVERLEAF_APP_NAME=<span class="string">&quot;Overleaf&quot;</span></span><br><span class="line"></span><br><span class="line">ENABLED_LINKED_FILE_TYPES=project_file,project_output_file</span><br><span class="line"></span><br><span class="line"><span class="comment"># Enables Thumbnail generation using ImageMagick</span></span><br><span class="line">ENABLE_CONVERSIONS=<span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Disables email confirmation requirement</span></span><br><span class="line">EMAIL_CONFIRMATION_DISABLED=<span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## Nginx</span></span><br><span class="line"><span class="comment"># NGINX_WORKER_PROCESSES=4</span></span><br><span class="line"><span class="comment"># NGINX_WORKER_CONNECTIONS=768</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## Set for TLS via nginx-proxy</span></span><br><span class="line"><span class="comment"># OVERLEAF_BEHIND_PROXY=true</span></span><br><span class="line"><span class="comment"># OVERLEAF_SECURE_COOKIE=true</span></span><br><span class="line"></span><br><span class="line">OVERLEAF_SITE_URL=http://tex.example.com</span><br><span class="line">OVERLEAF_NAV_TITLE=Overleaf</span><br><span class="line"><span class="comment"># OVERLEAF_HEADER_IMAGE_URL=http://somewhere.com/mylogo.png</span></span><br><span class="line">OVERLEAF_ADMIN_EMAIL=example@163.com</span><br><span class="line"></span><br><span class="line"><span class="comment"># OVERLEAF_LEFT_FOOTER=&#x27;[&#123;&quot;text&quot;: &quot;Contact your support team&quot;, &quot;url&quot;: &quot;mailto:support@example.com&quot;&#125;]&#x27;</span></span><br><span class="line"><span class="comment"># OVERLEAF_RIGHT_FOOTER=&#x27;[&#123;&quot;text&quot;: &quot;Hello, I am on the Right&quot;&#125;]&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># OVERLEAF_EMAIL_FROM_ADDRESS=team@example.com</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># OVERLEAF_EMAIL_AWS_SES_ACCESS_KEY_ID=</span></span><br><span class="line"><span class="comment"># OVERLEAF_EMAIL_AWS_SES_SECRET_KEY=</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># OVERLEAF_EMAIL_SMTP_HOST=smtp.example.com</span></span><br><span class="line"><span class="comment"># OVERLEAF_EMAIL_SMTP_PORT=587</span></span><br><span class="line"><span class="comment"># OVERLEAF_EMAIL_SMTP_SECURE=false</span></span><br><span class="line"><span class="comment"># OVERLEAF_EMAIL_SMTP_USER=</span></span><br><span class="line"><span class="comment"># OVERLEAF_EMAIL_SMTP_PASS=</span></span><br><span class="line"><span class="comment"># OVERLEAF_EMAIL_SMTP_NAME=</span></span><br><span class="line"><span class="comment"># OVERLEAF_EMAIL_SMTP_LOGGER=false</span></span><br><span class="line"><span class="comment"># OVERLEAF_EMAIL_SMTP_TLS_REJECT_UNAUTH=true</span></span><br><span class="line"><span class="comment"># OVERLEAF_EMAIL_SMTP_IGNORE_TLS=false</span></span><br><span class="line"><span class="comment"># OVERLEAF_CUSTOM_EMAIL_FOOTER=This system is run by department x</span></span><br><span class="line"></span><br><span class="line"><span class="comment">################</span></span><br><span class="line"><span class="comment">## Server Pro ##</span></span><br><span class="line"><span class="comment">################</span></span><br><span class="line"></span><br><span class="line">EXTERNAL_AUTH=none</span><br><span class="line"><span class="comment"># OVERLEAF_LDAP_URL=ldap://ldap:389</span></span><br><span class="line"><span class="comment"># OVERLEAF_LDAP_SEARCH_BASE=ou=people,dc=planetexpress,dc=com</span></span><br><span class="line"><span class="comment"># OVERLEAF_LDAP_SEARCH_FILTER=(uid=&#123;&#123;username&#125;&#125;)</span></span><br><span class="line"><span class="comment"># OVERLEAF_LDAP_BIND_DN=cn=admin,dc=planetexpress,dc=com</span></span><br><span class="line"><span class="comment"># OVERLEAF_LDAP_BIND_CREDENTIALS=GoodNewsEveryone</span></span><br><span class="line"><span class="comment"># OVERLEAF_LDAP_EMAIL_ATT=mail</span></span><br><span class="line"><span class="comment"># OVERLEAF_LDAP_NAME_ATT=cn</span></span><br><span class="line"><span class="comment"># OVERLEAF_LDAP_LAST_NAME_ATT=sn</span></span><br><span class="line"><span class="comment"># OVERLEAF_LDAP_UPDATE_USER_DETAILS_ON_LOGIN=true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># OVERLEAF_TEMPLATES_USER_ID=578773160210479700917ee5</span></span><br><span class="line"><span class="comment"># OVERLEAF_NEW_PROJECT_TEMPLATE_LINKS=[&#123;&quot;name&quot;:&quot;All Templates&quot;,&quot;url&quot;:&quot;/templates/all&quot;&#125;]</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># TEX_LIVE_DOCKER_IMAGE=quay.io/sharelatex/texlive-full:2022.1</span></span><br><span class="line"><span class="comment"># ALL_TEX_LIVE_DOCKER_IMAGES=quay.io/sharelatex/texlive-full:2022.1,quay.io/sharelatex/texlive-full:2021.1,quay.io/sharelatex/texlive-full:2020.1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># OVERLEAF_PROXY_LEARN=true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># S3</span></span><br><span class="line"><span class="comment"># Docs: https://github.com/overleaf/overleaf/wiki/S3</span></span><br><span class="line"><span class="comment"># ## Enable the s3 backend for filestore</span></span><br><span class="line"><span class="comment"># OVERLEAF_FILESTORE_BACKEND=s3</span></span><br><span class="line"><span class="comment"># ## Enable S3 backend for history</span></span><br><span class="line"><span class="comment"># OVERLEAF_HISTORY_BACKEND=s3</span></span><br><span class="line"><span class="comment"># #</span></span><br><span class="line"><span class="comment"># # Pick one of the two sections &quot;AWS S3&quot; or &quot;Self-hosted S3&quot;.</span></span><br><span class="line"><span class="comment"># #</span></span><br><span class="line"><span class="comment"># # AWS S3</span></span><br><span class="line"><span class="comment"># ## Bucket name for project files</span></span><br><span class="line"><span class="comment"># OVERLEAF_FILESTORE_USER_FILES_BUCKET_NAME=overleaf-user-files</span></span><br><span class="line"><span class="comment"># ## Bucket name for template files</span></span><br><span class="line"><span class="comment"># OVERLEAF_FILESTORE_TEMPLATE_FILES_BUCKET_NAME=overleaf-template-files</span></span><br><span class="line"><span class="comment"># ## Key for filestore user</span></span><br><span class="line"><span class="comment"># OVERLEAF_FILESTORE_S3_ACCESS_KEY_ID=...</span></span><br><span class="line"><span class="comment"># ## Secret for filestore user</span></span><br><span class="line"><span class="comment"># OVERLEAF_FILESTORE_S3_SECRET_ACCESS_KEY=...</span></span><br><span class="line"><span class="comment"># ## Bucket region you picked when creating the buckets.</span></span><br><span class="line"><span class="comment"># OVERLEAF_FILESTORE_S3_REGION=&quot;&quot;</span></span><br><span class="line"><span class="comment"># ## Bucket name for project history blobs</span></span><br><span class="line"><span class="comment"># OVERLEAF_HISTORY_PROJECT_BLOBS_BUCKET=overleaf-project-blobs</span></span><br><span class="line"><span class="comment"># ## Bucket name for history chunks</span></span><br><span class="line"><span class="comment"># OVERLEAF_HISTORY_CHUNKS_BUCKET=overleaf-chunks</span></span><br><span class="line"><span class="comment"># ## Key for history user</span></span><br><span class="line"><span class="comment"># OVERLEAF_HISTORY_S3_ACCESS_KEY_ID=...</span></span><br><span class="line"><span class="comment"># ## Secret for history user</span></span><br><span class="line"><span class="comment"># OVERLEAF_HISTORY_S3_SECRET_ACCESS_KEY=...</span></span><br><span class="line"><span class="comment"># ## Bucket region you picked when creating the buckets.</span></span><br><span class="line"><span class="comment"># OVERLEAF_HISTORY_S3_REGION=&quot;&quot;</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># # Self-hosted S3</span></span><br><span class="line"><span class="comment"># ## Bucket name for project files</span></span><br><span class="line"><span class="comment"># OVERLEAF_FILESTORE_USER_FILES_BUCKET_NAME=overleaf-user-files</span></span><br><span class="line"><span class="comment"># ## Bucket name for template files</span></span><br><span class="line"><span class="comment"># OVERLEAF_FILESTORE_TEMPLATE_FILES_BUCKET_NAME=overleaf-template-files</span></span><br><span class="line"><span class="comment"># ## Key for filestore user</span></span><br><span class="line"><span class="comment"># OVERLEAF_FILESTORE_S3_ACCESS_KEY_ID=...</span></span><br><span class="line"><span class="comment"># ## Secret for filestore user</span></span><br><span class="line"><span class="comment"># OVERLEAF_FILESTORE_S3_SECRET_ACCESS_KEY=...</span></span><br><span class="line"><span class="comment"># ## S3 provider endpoint</span></span><br><span class="line"><span class="comment"># OVERLEAF_FILESTORE_S3_ENDPOINT=http://10.10.10.10:9000</span></span><br><span class="line"><span class="comment"># ## Path style addressing of buckets. Most likely you need to set this to &quot;true&quot;.</span></span><br><span class="line"><span class="comment"># OVERLEAF_FILESTORE_S3_PATH_STYLE=&quot;true&quot;</span></span><br><span class="line"><span class="comment"># ## Bucket region. Most likely you do not need to configure this.</span></span><br><span class="line"><span class="comment"># OVERLEAF_FILESTORE_S3_REGION=&quot;&quot;</span></span><br><span class="line"><span class="comment"># ## Bucket name for project history blobs</span></span><br><span class="line"><span class="comment"># OVERLEAF_HISTORY_PROJECT_BLOBS_BUCKET=overleaf-project-blobs</span></span><br><span class="line"><span class="comment"># ## Bucket name for history chunks</span></span><br><span class="line"><span class="comment"># OVERLEAF_HISTORY_CHUNKS_BUCKET=overleaf-chunks</span></span><br><span class="line"><span class="comment"># ## Key for history user</span></span><br><span class="line"><span class="comment"># OVERLEAF_HISTORY_S3_ACCESS_KEY_ID=...</span></span><br><span class="line"><span class="comment"># ## Secret for history user</span></span><br><span class="line"><span class="comment"># OVERLEAF_HISTORY_S3_SECRET_ACCESS_KEY=...</span></span><br><span class="line"><span class="comment"># ## S3 provider endpoint</span></span><br><span class="line"><span class="comment"># OVERLEAF_HISTORY_S3_ENDPOINT=http://10.10.10.10:9000</span></span><br><span class="line"><span class="comment"># ## Path style addressing of buckets. Most likely you need to set this to &quot;true&quot;.</span></span><br><span class="line"><span class="comment"># OVERLEAF_HISTORY_S3_PATH_STYLE=&quot;true&quot;</span></span><br><span class="line"><span class="comment"># ## Bucket region. Most likely you do not need to configure this.</span></span><br><span class="line"><span class="comment"># OVERLEAF_HISTORY_S3_REGION=&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+<h2 id="修改启动镜像"><a href="#修改启动镜像" class="headerlink" title="修改启动镜像"></a>修改启动镜像</h2><blockquote>
+<p>官方提供的镜像是不完全Texlive程序且不支持中文字体。<a target="_blank" rel="noopener" href="https://wrm244.gxist.cn/blog/project/web/overleaf-build-docker/#%E4%BF%AE%E6%94%B9%E5%90%AF%E5%8A%A8%E9%95%9C%E5%83%8F">参考1</a>基于官方开源的overleaf镜像搭建了自己的docker镜像：wrm244&#x2F;sharelatex:with-texlive-full，如果对docker比较熟悉的同学可以跳过该步骤自行拉取官方镜像然后再进行配置，当然官方镜像不包含中文字体支持，可<a target="_blank" rel="noopener" href="https://yxnchen.github.io/technique/Docker%E9%83%A8%E7%BD%B2ShareLaTeX%E5%B9%B6%E7%AE%80%E5%8D%95%E9%85%8D%E7%BD%AE%E4%B8%AD%E6%96%87%E7%8E%AF%E5%A2%83/#%E5%AE%89%E8%A3%85%E5%B9%B6%E9%85%8D%E7%BD%AEShareLaTeX">参考文章</a>配置。</p>
+</blockquote>
+<blockquote>
+<p>在这里直接使用wrm244&#x2F;sharelatex:with-texlive-full作为sharelatex的镜像，但该镜像直接使用时，出现很多docker变量还是原作者的自定义内容（包括但不限于：左下角标注、联系邮箱、用户修改密码的域名等），笔者目前没有寻找使用toolkit的情况下，修改这里面的变量的方法，有待后续更新。</p>
+</blockquote>
+<ol>
+<li>进入<code>overleaf</code>文件夹下的<code>lib</code>目录</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> lib</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>打开<code>docker-compose.base.yml</code>文件，将<code>image: &quot;$&#123;IMAGE&#125;&quot;</code>修改为<code>image: wrm244/sharelatex:with-texlive-full</code>，改这一行就好，修改后的完整文件内容如下：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">services:</span><br><span class="line"></span><br><span class="line">    sharelatex:</span><br><span class="line">        restart: always</span><br><span class="line">        image: wrm244/sharelatex:with-texlive-full</span><br><span class="line">        container_name: sharelatex</span><br><span class="line">        volumes:</span><br><span class="line">            - <span class="string">&quot;<span class="variable">$&#123;OVERLEAF_DATA_PATH&#125;</span>:<span class="variable">$&#123;OVERLEAF_IN_CONTAINER_DATA_PATH&#125;</span>&quot;</span></span><br><span class="line">        ports:</span><br><span class="line">            - <span class="string">&quot;<span class="variable">$&#123;OVERLEAF_LISTEN_IP:-127.0.0.1&#125;</span>:<span class="variable">$&#123;OVERLEAF_PORT:-80&#125;</span>:80&quot;</span></span><br><span class="line">        environment:</span><br><span class="line">          GIT_BRIDGE_ENABLED: <span class="string">&quot;<span class="variable">$&#123;GIT_BRIDGE_ENABLED&#125;</span>&quot;</span></span><br><span class="line">          GIT_BRIDGE_HOST: <span class="string">&quot;git-bridge&quot;</span></span><br><span class="line">          GIT_BRIDGE_PORT: <span class="string">&quot;8000&quot;</span></span><br><span class="line">          REDIS_HOST: <span class="string">&quot;<span class="variable">$&#123;REDIS_HOST&#125;</span>&quot;</span></span><br><span class="line">          REDIS_PORT: <span class="string">&quot;<span class="variable">$&#123;REDIS_PORT&#125;</span>&quot;</span></span><br><span class="line">          V1_HISTORY_URL: <span class="string">&quot;http://sharelatex:3100/api&quot;</span></span><br><span class="line">        env_file:</span><br><span class="line">            - ../config/variables.env</span><br><span class="line">        stop_grace_period: 60s</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>咋哩也可以修改<code>config</code>目录下<code>overleaf.rc</code>配置文件赋值为<code>SHARELATEX_IMAGE=wrm244/sharelatex:with-texlive-full</code></p>
+</blockquote>
+<h2 id="（可选）关闭docker自启，配置服务器的swap分区"><a href="#（可选）关闭docker自启，配置服务器的swap分区" class="headerlink" title="（可选）关闭docker自启，配置服务器的swap分区"></a>（可选）关闭docker自启，配置服务器的swap分区</h2><blockquote>
+<p>overleaf的镜像对内存要求并不高，但是笔者在初次尝试使用了内存2G的ECS服务器，启动docker服务后，服务器磁盘读取拉满，直接导致进不去命令行。</p>
+</blockquote>
+<h3 id="关闭docker服务自启动"><a href="#关闭docker服务自启动" class="headerlink" title="关闭docker服务自启动"></a>关闭docker服务自启动</h3><p>在启动docker镜像前，建议先关闭docker服务的自启动：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">systemctl <span class="built_in">disable</span> docker</span><br><span class="line">systemctl <span class="built_in">disable</span> docker.socket</span><br></pre></td></tr></table></figure>
+<p>另外，将上一小节中的<code>docker-compose.base.yml</code>文件中的<code>restart: always</code>修改为<code>restart: no</code>，这样容器不会在出现问题关闭后又自动重启。</p>
+<p>关闭docker服务自启动后，需要手动启动docker服务：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">systemctl start docker</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这样万一docker出问题导致服务器宕机，无法进入命令行，也可以通过强制重启服务器来关闭docker。</p>
+</blockquote>
+<p>在确认docker容器运行正常后，可以通过以下命令重新开启docker服务的自启动：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">systemctl <span class="built_in">enable</span> docker</span><br><span class="line">systemctl <span class="built_in">enable</span> docker.socket</span><br></pre></td></tr></table></figure>
+<h3 id="配置服务器的swap分区"><a href="#配置服务器的swap分区" class="headerlink" title="配置服务器的swap分区"></a>配置服务器的swap分区</h3><blockquote>
+<p>参考<a target="_blank" rel="noopener" href="https://help.aliyun.com/zh/ecs/support/how-do-i-configure-the-swap-partition-of-a-linux-instance">阿里云ECS官方文档：如何配置Linux实例的swap分区？</a></p>
+</blockquote>
+<h1 id="启动docker容器"><a href="#启动docker容器" class="headerlink" title="启动docker容器"></a>启动docker容器</h1><p>在overleaf目录下执行以下命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bin/up</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意：第一次启动时，会下载镜像，可能会比较慢。</p>
+</blockquote>
+<blockquote>
+<p>该命令类似于<code>docker run</code>命令，但是会自动拉取镜像并启动容器。<br>首次运行会看到下载镜像的过程，下载完成后会自动运行容器。然后会输出日志。在输出日志时，可用用<code>ctrl+c</code>来停止日志输出，此时会停止容器。<br>停止后，可通过<code>bin/start</code>来重新启动容器，并不输出日志。</p>
+</blockquote>
+<h1 id="配置nginx反代"><a href="#配置nginx反代" class="headerlink" title="配置nginx反代"></a>配置nginx反代</h1><p>在命令行中运行<code>sudo docker ps -a</code>可以看到有3个容器在运行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root@xxxxxxx:~# <span class="built_in">sudo</span> docker ps -a</span><br><span class="line">CONTAINER ID   IMAGE                                 COMMAND                  CREATED       STATUS                       PORTS                      NAMES</span><br><span class="line">e9e7b2b174e0   wrm244/sharelatex:with-texlive-full   <span class="string">&quot;/sbin/my_init&quot;</span>          2 hours ago   Up About an hour             127.0.0.1:9000-&gt;80/tcp     sharelatex</span><br><span class="line">efd2002d6a0c   redis:6.2                             <span class="string">&quot;docker-entrypoint.s…&quot;</span>   2 hours ago   Up About an hour             6379/tcp                   redis</span><br><span class="line">973152ada599   mongo:6.0                             <span class="string">&quot;docker-entrypoint.s…&quot;</span>   2 hours ago   Up About an hour (healthy)   27017/tcp </span><br></pre></td></tr></table></figure>
+<p>在<code>PORTS</code>列中，可以看到容器的端口映射。在<code>sharelatex</code>容器的端口映射为<code>127.0.0.1:9000-&gt;80/tcp</code>，这意味着容器的<code>80</code>端口被映射到主机本地ip的<code>9000</code>端口，也就是overleaf的网页被映射到了<code>127.0.0.1:9000</code>上。</p>
+<p>接下来配置宝塔面板的nginx反代。<br>在宝塔面板的<code>左侧菜单-&gt;网站-&gt;方向代理</code>，点击<code>添加反代</code>。<br>在<code>域名</code>中填写要在外网使用的域名，例如设置为<code>tex.example.com</code>。<br>在<code>目标</code>中选择<code>URL地址</code>，IP填写<code>0.0.0.0:9000</code>，暂不清楚这里为什么不是127.0.0.1。<br>在<code>发送域名(host)</code>中填写<code>$http_host</code>，是默认填写好的。</p>
+<p>完成以上步骤后，即将<code>127.0.0.1:9000</code>反向代理到了<code>tex.example.com</code>上。</p>
+<p>至于域名使用https，只要在宝塔面板中为域名配置ssl证书即可。</p>
+<h1 id="使用overleaf"><a href="#使用overleaf" class="headerlink" title="使用overleaf"></a>使用overleaf</h1><p>创建管理员账户:<br>在浏览器中访问<code>https://tex.example.com/launchpad</code>或者在局域网内访问<code>http://localhost:服务端口/launchpad</code>即可看到管理员的注册界面，输入密码注册即可。</p>
+<blockquote>
+<p>笔者使用该镜像没有再研究注册更多用户时，给出的修改密码的链接仍然是原作者的域名的问题，应该需要更改sharelatex的docker镜像的变量，有待后续更新。</p>
+</blockquote>
+<h1 id="迁移与备份"><a href="#迁移与备份" class="headerlink" title="迁移与备份"></a>迁移与备份</h1><blockquote>
+<p>本节完全转自<a target="_blank" rel="noopener" href="https://wrm244.gxist.cn/blog/project/web/overleaf-build-docker/">参考1</a>，没有经过测试！！！<br>如果是采用<code>overleaf-toolkit</code>工具包进行部署服务的话，在该<code>overleaf</code>目录下的<code>data</code>文件夹会映射<code>docker</code>容器的文件，包括<code>sharelatex</code>、<code>redis</code>、<code>mongo</code>文件夹，备份这几个文件夹即可，在迁移的时候，启动容器前先把文件复制到<code>data</code>目录下即可恢复数据。</p>
+</blockquote>
+</article><div class="post-copyright"><div class="copyright-cc-box"><i class="anzhiyufont anzhiyu-icon-copyright"></i></div><div class="post-copyright__author_box"><a class="post-copyright__author_img" href="/" title="头像"><img class="post-copyright__author_img_back" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/avatar.jpeg" title="头像" alt="头像"><img class="post-copyright__author_img_front" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/avatar.jpeg" title="头像" alt="头像"></a><div class="post-copyright__author_name">Justin</div><div class="post-copyright__author_desc">Hi there!</div></div><div class="post-copyright__post__info"><a class="post-copyright__original" title="该文章为原创文章，注意版权协议" href="https://blog.jiaxin.fan/articles/20250526131427.html">原创</a><a class="post-copyright-title"><span onclick="rm.copyPageUrl('https://blog.jiaxin.fan/articles/20250526131427.html')">Docker部署Overleaf</span></a></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="rewardLeftButton"></div><div class="shareRight"><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="https://blog.jiaxin.fan/articles/20250526131427.html"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=Docker部署Overleaf&amp;url=https://blog.jiaxin.fan/articles/20250526131427.html&amp;pic=/img/default_cover.jpg" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><script>function copyCurrentPageUrl() {
+  var currentPageUrl = window.location.href;
+  var input = document.createElement("input");
+  input.setAttribute("value", currentPageUrl);
+  document.body.appendChild(input);
+  input.select();
+  input.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  document.body.removeChild(input);
+}</script><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="copyCurrentPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.jiaxin.fan" target="_blank">Justin</a>！</span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/overleaf/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>overleaf<span class="tagsPageCount">1</span></a><a class="post-meta__box__tags" href="/tags/docker/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>docker<span class="tagsPageCount">1</span></a></div></div></div><div class="post_share"><div class="social-share" data-image="/img/default_cover.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"/><script src="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer="defer"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/articles/20250519132715.html"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/default_cover.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">这是一篇用于测试webhook的文章</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="author-info__sayhi" id="author-info__sayhi" onclick="anzhiyu.changeSayHelloText()"></div><div class="author-info-avatar"><img class="avatar-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/avatar.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-status"><img class="g-status" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://bu.dusays.com/2023/08/24/64e6ce9c507bb.png" alt="status"/></div></div><div class="author-info__description"><div style="line-height:1.38;margin:0.6rem 0;text-align:justify;color:rgba(255, 255, 255, 0.8);">这有关于<b style="color:#fff">产品、设计、开发</b>相关的问题和看法，还有<b style="color:#fff">文章翻译</b>和<b style="color:#fff">分享</b>。</div><div style="line-height:1.38;margin:0.6rem 0;text-align:justify;color:rgba(255, 255, 255, 0.8);">相信你可以在这里找到对你有用的<b style="color:#fff">知识</b>和<b style="color:#fff">教程</b>。</div></div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/"><h1 class="author-info__name">Justin</h1><div class="author-info__desc">Hi there!</div></a><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://git.jiaxin.fan" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a></div></div></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bullhorn anzhiyu-shake"></i><span>公告</span></div><div class="announcement_content">欢迎~</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bars"></i><span>文章目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%89%E8%A3%85Docker%E5%92%8CDocker-Compose"><span class="toc-number">1.</span> <span class="toc-text">安装Docker和Docker Compose</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%AE%9D%E5%A1%94%E9%9D%A2%E6%9D%BF%E5%AE%89%E8%A3%85"><span class="toc-number">1.1.</span> <span class="toc-text">使用宝塔面板安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%AE%89%E8%A3%85"><span class="toc-number">1.2.</span> <span class="toc-text">使用命令行安装</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E5%B9%B6%E5%AE%89%E8%A3%85Overleaf-Toolkit"><span class="toc-number">2.</span> <span class="toc-text">配置并安装Overleaf Toolkit</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8B%89%E5%8F%96Overleaf-Toolkit"><span class="toc-number">2.1.</span> <span class="toc-text">拉取Overleaf Toolkit</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEOverleaf-Toolkit"><span class="toc-number">2.2.</span> <span class="toc-text">配置Overleaf Toolkit</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E5%90%AF%E5%8A%A8%E9%95%9C%E5%83%8F"><span class="toc-number">2.3.</span> <span class="toc-text">修改启动镜像</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%EF%BC%88%E5%8F%AF%E9%80%89%EF%BC%89%E5%85%B3%E9%97%ADdocker%E8%87%AA%E5%90%AF%EF%BC%8C%E9%85%8D%E7%BD%AE%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84swap%E5%88%86%E5%8C%BA"><span class="toc-number">2.4.</span> <span class="toc-text">（可选）关闭docker自启，配置服务器的swap分区</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E9%97%ADdocker%E6%9C%8D%E5%8A%A1%E8%87%AA%E5%90%AF%E5%8A%A8"><span class="toc-number">2.4.1.</span> <span class="toc-text">关闭docker服务自启动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84swap%E5%88%86%E5%8C%BA"><span class="toc-number">2.4.2.</span> <span class="toc-text">配置服务器的swap分区</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8docker%E5%AE%B9%E5%99%A8"><span class="toc-number">3.</span> <span class="toc-text">启动docker容器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEnginx%E5%8F%8D%E4%BB%A3"><span class="toc-number">4.</span> <span class="toc-text">配置nginx反代</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8overleaf"><span class="toc-number">5.</span> <span class="toc-text">使用overleaf</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BF%81%E7%A7%BB%E4%B8%8E%E5%A4%87%E4%BB%BD"><span class="toc-number">6.</span> <span class="toc-text">迁移与备份</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/articles/20250526131427.html" title="Docker部署Overleaf"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/default_cover.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Docker部署Overleaf"/></a><div class="content"><a class="title" href="/articles/20250526131427.html" title="Docker部署Overleaf">Docker部署Overleaf</a><time datetime="2025-05-26T13:14:27.000Z" title="发表于 2025-05-26 21:14:27">2025-05-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/articles/20250519132715.html" title="这是一篇用于测试webhook的文章"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/default_cover.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="这是一篇用于测试webhook的文章"/></a><div class="content"><a class="title" href="/articles/20250519132715.html" title="这是一篇用于测试webhook的文章">这是一篇用于测试webhook的文章</a><time datetime="2025-05-19T13:27:15.000Z" title="发表于 2025-05-19 21:27:15">2025-05-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/articles/20250428074518.html" title="Hexo博客搭建相关参考"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/default_cover.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hexo博客搭建相关参考"/></a><div class="content"><a class="title" href="/articles/20250428074518.html" title="Hexo博客搭建相关参考">Hexo博客搭建相关参考</a><time datetime="2025-04-28T07:45:18.000Z" title="发表于 2025-04-28 15:45:18">2025-04-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/articles/20240224124604.html" title="提取图中苹果的面积、周长和最小外接矩形的python、matlab和c++代码"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/default_cover.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="提取图中苹果的面积、周长和最小外接矩形的python、matlab和c++代码"/></a><div class="content"><a class="title" href="/articles/20240224124604.html" title="提取图中苹果的面积、周长和最小外接矩形的python、matlab和c++代码">提取图中苹果的面积、周长和最小外接矩形的python、matlab和c++代码</a><time datetime="2024-02-24T12:46:04.000Z" title="发表于 2024-02-24 20:46:04">2024-02-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/articles/20240224122505.html" title="NVIDIA-SMI has failed because it couldn‘t communicate with the NVIDIA driver报错原因及解决"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/default_cover.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="NVIDIA-SMI has failed because it couldn‘t communicate with the NVIDIA driver报错原因及解决"/></a><div class="content"><a class="title" href="/articles/20240224122505.html" title="NVIDIA-SMI has failed because it couldn‘t communicate with the NVIDIA driver报错原因及解决">NVIDIA-SMI has failed because it couldn‘t communicate with the NVIDIA driver报错原因及解决</a><time datetime="2024-02-24T12:25:05.000Z" title="发表于 2024-02-24 20:25:05">2024-02-24</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div id="footer_deal"><a class="deal_link" href="mailto:hello@jiaxin.fan" title="email"><i class="anzhiyufont anzhiyu-icon-envelope"></i></a><img class="footer_mini_logo" title="返回顶部" alt="返回顶部" onclick="anzhiyu.scrollToDest(0, 500)" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/avatar.jpeg" size="50px"/><a class="deal_link" target="_blank" rel="noopener" href="https://git.jiaxin.fan" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a></div><div id="anzhiyu-footer"><div class="footer-group"><div class="footer-title">服务</div><div class="footer-links"><a class="footer-item" title="51la统计" target="_blank" rel="noopener" href="https://v6.51.la/">51la统计</a><a class="footer-item" title="开往" target="_blank" rel="noopener" href="https://www.travellings.cn/go.html">开往</a></div></div><div class="footer-group"><div class="footer-title">导航</div><div class="footer-links"><a class="footer-item" title="即刻短文" href="/essay/">即刻短文</a><a class="footer-item" title="友链文章" href="/fcircle/">友链文章</a><a class="footer-item" title="留言板" href="/comments/">留言板</a></div></div><div class="footer-group"><div class="footer-title">协议</div><div class="footer-links"><a class="footer-item" title="隐私协议" href="/privacy/">隐私协议</a><a class="footer-item" title="Cookies" href="/cookies/">Cookies</a><a class="footer-item" title="版权协议" href="/copyright/">版权协议</a></div></div><div class="footer-group"><div class="footer-title-group"><div class="footer-title">友链</div><a class="random-friends-btn" id="footer-random-friends-btn" href="javascript:addFriendLinksInFooter();" title="换一批友情链接"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right"></i></a></div><div class="footer-links" id="friend-links-in-footer"></div></div></div><p id="ghbdages"><a class="github-badge" target="_blank" href="https://hexo.io/" style="margin-inline:5px" data-title="博客框架为Hexo" title="博客框架为Hexo"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.1.5/img/badge/Frame-Hexo.svg" alt="博客框架为Hexo"/></a><a class="github-badge" target="_blank" href="https://blog.anheyu.com/" style="margin-inline:5px" data-title="本站使用AnZhiYu主题" title="本站使用AnZhiYu主题"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.9/img/Theme-AnZhiYu-2E67D3.svg" alt="本站使用AnZhiYu主题"/></a><a class="github-badge" target="_blank" href="https://github.com/" style="margin-inline:5px" data-title="本站项目由Github托管" title="本站项目由Github托管"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.1.5/img/badge/Source-Github.svg" alt="本站项目由Github托管"/></a><a class="github-badge" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" style="margin-inline:5px" data-title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.2.0/img/badge/Copyright-BY-NC-SA.svg" alt="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"/></a></p></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div id="footer-bar-tips"><div class="copyright">&copy;2021 - 2026 By <a class="footer-bar-link" href="/" title="Justin" target="_blank">Justin</a></div></div><div id="footer-type-tips"></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/anzhiyu-c/hexo-theme-anzhiyu" title="主题">主题</a><a class="footer-bar-link" target="_blank" rel="noopener" href="https://hexo.io" title="框架">框架</a><a class="footer-bar-link" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/" title="浙ICP备2026000755号">浙ICP备2026000755号</a><a class="footer-bar-link" target="_blank" rel="noopener" href="https://beian.mps.gov.cn/#/query/webSearch?code=33048102260006" title="浙公网安备33048102260006号">浙公网安备33048102260006号</a><a class="footer-bar-link cc" href="/copyright" title="cc协议"><i class="anzhiyufont anzhiyu-icon-copyright-line"></i><i class="anzhiyufont anzhiyu-icon-creative-commons-by-line"></i><i class="anzhiyufont anzhiyu-icon-creative-commons-nc-line"></i><i class="anzhiyufont anzhiyu-icon-creative-commons-nd-line"></i></a></div></div></div></footer></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">文章</div><div class="length-num">66</div></a><a href="/tags/" title="tag"><div class="headline">标签</div><div class="length-num">60</div></a><a href="/categories/" title="category"><div class="headline">分类</div><div class="length-num">17</div></a></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><a class="darkmode_switchbutton menu-child" href="javascript:void(0);" title="显示模式"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span>显示模式</span></a></div><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" href="https://blog.jiaxin.fan/" title="我的博客"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/justinfjx/images/main/hexo/202504281806460.jpeg" alt="我的博客"/><span class="back-menu-item-text">我的博客</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">项目</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://image.anheyu.com/" title="安知鱼图床"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://image.anheyu.com/favicon.ico" alt="安知鱼图床"/><span class="back-menu-item-text">安知鱼图床</span></a></div></div></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 时光</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/link/"><span> 导航</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/comments/"><span> 留言板</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/air-conditioner/"><span> 小空调</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:toRandomPost()"><span> 随便逛逛</span></a></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/Hexo/" style="font-size: 0.88rem;">Hexo<sup>1</sup></a><a href="/tags/anaconda/" style="font-size: 0.88rem;">anaconda<sup>1</sup></a><a href="/tags/axios/" style="font-size: 0.88rem;">axios<sup>1</sup></a><a href="/tags/csdn/" style="font-size: 0.88rem;">csdn<sup>1</sup></a><a href="/tags/cuda/" style="font-size: 0.88rem;">cuda<sup>1</sup></a><a href="/tags/c%E8%AF%AD%E8%A8%80/" style="font-size: 0.88rem;">c语言<sup>3</sup></a><a href="/tags/docker/" style="font-size: 0.88rem;">docker<sup>1</sup></a><a href="/tags/ide/" style="font-size: 0.88rem;">ide<sup>1</sup></a><a href="/tags/latex/" style="font-size: 0.88rem;">latex<sup>1</sup></a><a href="/tags/linux/" style="font-size: 0.88rem;">linux<sup>4</sup></a><a href="/tags/markdown/" style="font-size: 0.88rem;">markdown<sup>1</sup></a><a href="/tags/matlab/" style="font-size: 0.88rem;">matlab<sup>2</sup></a><a href="/tags/numpy/" style="font-size: 0.88rem;">numpy<sup>1</sup></a><a href="/tags/nvidia/" style="font-size: 0.88rem;">nvidia<sup>3</sup></a><a href="/tags/opencv/" style="font-size: 0.88rem;">opencv<sup>3</sup></a><a href="/tags/openmv/" style="font-size: 0.88rem;">openmv<sup>1</sup></a><a href="/tags/openvino/" style="font-size: 0.88rem;">openvino<sup>1</sup></a><a href="/tags/overleaf/" style="font-size: 0.88rem;">overleaf<sup>1</sup></a><a href="/tags/pip/" style="font-size: 0.88rem;">pip<sup>1</sup></a><a href="/tags/pycharm/" style="font-size: 0.88rem;">pycharm<sup>1</sup></a><a href="/tags/python/" style="font-size: 0.88rem;">python<sup>14</sup></a><a href="/tags/pytorch/" style="font-size: 0.88rem;">pytorch<sup>4</sup></a><a href="/tags/stm32/" style="font-size: 0.88rem;">stm32<sup>3</sup></a><a href="/tags/ubuntu/" style="font-size: 0.88rem;">ubuntu<sup>4</sup></a><a href="/tags/vue-axios/" style="font-size: 0.88rem;">vue-axios<sup>1</sup></a><a href="/tags/vue-js/" style="font-size: 0.88rem;">vue.js<sup>2</sup></a><a href="/tags/vue3/" style="font-size: 0.88rem;">vue3<sup>1</sup></a><a href="/tags/windows/" style="font-size: 0.88rem;">windows<sup>4</sup></a><a href="/tags/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/" style="font-size: 0.88rem;">串口通信<sup>1</sup></a><a href="/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/" style="font-size: 0.88rem;">人工智能<sup>22</sup></a><a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 0.88rem;">其他<sup>6</sup></a><a href="/tags/%E5%8D%95%E7%89%87%E6%9C%BA/" style="font-size: 0.88rem;">单片机<sup>2</sup></a><a href="/tags/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" style="font-size: 0.88rem;">卷积神经网络<sup>1</sup></a><a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%A1%AC%E4%BB%B6/" style="font-size: 0.88rem;">嵌入式硬件<sup>2</sup></a><a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 0.88rem;">机器学习<sup>17</sup></a><a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" style="font-size: 0.88rem;">深度学习<sup>9</sup></a><a href="/tags/%E7%9F%A9%E9%98%B5/" style="font-size: 0.88rem;">矩阵<sup>1</sup></a><a href="/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" style="font-size: 0.88rem;">神经网络<sup>4</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" style="font-size: 0.88rem;">计算机视觉<sup>7</sup></a><a href="/tags/%E9%95%9C%E5%83%8F/" style="font-size: 0.88rem;">镜像<sup>1</sup></a></div></div><hr/></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div class="docsearch-wrap"><div id="docsearch" style="display:none"></div><link rel="stylesheet" href="https://cdn.cbd.int/@docsearch/css@3.5.2/dist/style.css"/><script src="https://cdn.cbd.int/@docsearch/js@3.5.2/dist/umd/index.js"></script><script>(() => {
+  docsearch(Object.assign({
+    appId: 'LQ3PP96P58',
+    apiKey: '14355d451d3adf9df136d5d0de8ee169',
+    indexName: 'jiaxin',
+    container: '#docsearch',
+  }, {"insights":true,"container":"#docsearch","debug":false}))
+
+  const handleClick = () => {
+    document.querySelector('.DocSearch-Button').click()
+  }
+
+  const searchClickFn = () => {
+    anzhiyu.addEventListenerPjax(document.querySelector('#search-button > .search'), 'click', handleClick)
+  }
+
+  searchClickFn()
+  window.addEventListener('pjax:complete', searchClickFn)
+})()</script></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://y.qq.com/n/ryqq/playlist/8802438608&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.umd.js"></script><script src="https://cdn.cbd.int/instant.page@5.2.0/instantpage.js" type="module"></script><script src="https://cdn.cbd.int/vanilla-lazyload@17.8.5/dist/lazyload.iife.min.js"></script><script src="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.js"></script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script>// 消除控制台打印
+var HoldLog = console.log;
+console.log = function () {};
+let now1 = new Date();
+queueMicrotask(() => {
+  const Log = function () {
+    HoldLog.apply(console, arguments);
+  }; //在恢复前输出日志
+  const grt = new Date("04/01/2021 00:00:00"); //此处修改你的建站时间或者网站上线时间
+  now1.setTime(now1.getTime() + 250);
+  const days = (now1 - grt) / 1000 / 60 / 60 / 24;
+  const dnum = Math.floor(days);
+  const ascll = [
+    `欢迎使用安知鱼!`,
+    `生活明朗, 万物可爱`,
+    `
+        
+       █████╗ ███╗   ██╗███████╗██╗  ██╗██╗██╗   ██╗██╗   ██╗
+      ██╔══██╗████╗  ██║╚══███╔╝██║  ██║██║╚██╗ ██╔╝██║   ██║
+      ███████║██╔██╗ ██║  ███╔╝ ███████║██║ ╚████╔╝ ██║   ██║
+      ██╔══██║██║╚██╗██║ ███╔╝  ██╔══██║██║  ╚██╔╝  ██║   ██║
+      ██║  ██║██║ ╚████║███████╗██║  ██║██║   ██║   ╚██████╔╝
+      ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝    ╚═════╝
+        
+        `,
+    "已上线",
+    dnum,
+    "天",
+    "©2021 By 安知鱼 V1.6.14",
+  ];
+  const ascll2 = [`NCC2-036`, `调用前置摄像头拍照成功，识别为【小笨蛋】.`, `Photo captured: `, `🤪`];
+
+  setTimeout(
+    Log.bind(
+      console,
+      `\n%c${ascll[0]} %c ${ascll[1]} %c ${ascll[2]} %c${ascll[3]}%c ${ascll[4]}%c ${ascll[5]}\n\n%c ${ascll[6]}\n`,
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      ""
+    )
+  );
+  setTimeout(
+    Log.bind(
+      console,
+      `%c ${ascll2[0]} %c ${ascll2[1]} %c \n${ascll2[2]} %c\n${ascll2[3]}\n`,
+      "color:white; background-color:#4fd953",
+      "",
+      "",
+      'background:url("https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/tinggge.gif") no-repeat;font-size:450%'
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c WELCOME %c 你好，小笨蛋.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(
+      console,
+      "%c ⚡ Powered by 安知鱼 %c 你正在访问 Justin 的博客.",
+      "color:white; background-color:#f0ad4e",
+      ""
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c W23-12 %c 你已打开控制台.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(console, "%c S013-782 %c 你现在正处于监控中.", "color:white; background-color:#d9534f", "")
+  );
+});</script><script async src="/anzhiyu/random.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, '']
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.cbd.int/mathjax@3.2.2/es5/tex-mml-chtml.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typesetPromise()
+}</script><input type="hidden" name="page-type" id="page-type" value="post"></div><script async data-pjax src="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script><script src="/js/anzhiyu/right_click_menu.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css"><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.cbd.int/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://cdn.cbd.int/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://cdn.cbd.int/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  anzhiyu.removeGlobalFnEvent('pjax')
+  anzhiyu.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script charset="UTF-8" src="https://cdn.cbd.int/anzhiyu-theme-static@1.1.5/accesskey/accesskey.js"></script></div><div id="popup-window"><div class="popup-window-title">通知</div><div class="popup-window-divider"></div><div class="popup-window-content"><div class="popup-tip">你好呀</div><div class="popup-link"><i class="anzhiyufont anzhiyu-icon-arrow-circle-right"></i></div></div></div><!-- hexo injector body_end start -->
+  <script data-pjax src="https://cdn.jsdelivr.net/gh/barry-flynn/hexo-github-calendar/hexo_githubcalendar.js"></script>
+  <script data-pjax>
+        function GithubCalendarConfig(){
+            var git_githubapiurl ="https://github-calendar-api.meta-code.top/api?user=justinfjx";
+            var git_color =['#ebedf0', '#a2f7af', '#6ce480', '#54ad63', '#469252', '#31753c', '#1f5f2a', '#13531f', '#084111', '#032b09', '#000000'];
+            var git_user ="justinfjx";
+            var parent_div_git = document.getElementById('recent-posts');
+            var git_div_html = '<div class="recent-post-item" style="width:100%;height:auto;padding:10px;"><div id="github_loading" style="width:10%;height:100%;margin:0 auto;display: block"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"  viewBox="0 0 50 50" style="enable-background:new 0 0 50 50" xml:space="preserve"><path fill="#d0d0d0" d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z" transform="rotate(275.098 25 25)"><animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="0.6s" repeatCount="indefinite"></animateTransform></path></svg></div><div id="github_container"></div></div>';
+            if(parent_div_git && location.pathname =='/'){
+                console.log("已挂载hexo-github-calendar https://github.com/Barry-Flynn/hexo-github-calendar");
+                // parent_div_git.innerHTML=git_div_html+parent_div_git.innerHTML // 无报错，但不影响使用(支持pjax跳转)
+                parent_div_git.insertAdjacentHTML("afterbegin",git_div_html) // 有报错，但不影响使用(支持pjax跳转)
+            };
+            GithubCalendar(git_githubapiurl,git_color,git_user)
+        }
+        if(document.getElementById('recent-posts')){
+            GithubCalendarConfig()
+        }
+    </script>
+    <style>#github_container{min-height:280px}@media screen and (max-width:650px) {#github_container{background-image:;min-height:0px}}</style>
+    <style></style><!-- hexo injector body_end end --></body></html>
